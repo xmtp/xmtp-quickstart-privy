@@ -1,15 +1,33 @@
-# XMTP PWA with Privy Tutorial
+# XMTP PWA with WalletConnect & Wagmi
 
-### Installation
+![xmtp](https://github.com/xmtp/xmtp-quickstart-reactjs/assets/1447073/3f2979ec-4d13-4c3d-bf20-deab3b2ffaa1)
+
+## Installation
 
 ```bash
-bun install
-bun start
+yarn install
+yarn dev
 ```
 
-This tutorial will guide you through the process of creating an XMTP app with Privy.
+## Concepts
 
-### Step 1: Setup
+Head to our docs to understand XMTP's concepts
+
+- [Get started](https://xmtp.org/docs/build/get-started/overview?sdk=react)
+- [Authentication](https://xmtp.org/docs/build/authentication?sdk=react)
+- [Conversations](https://xmtp.org/docs/build/conversations?sdk=react)
+- [Messages](https://xmtp.org/docs/build/messages/?sdk=react)
+- [Streams](https://xmtp.org/docs/build/streams/?sdk=react)
+
+#### Troubleshooting
+
+If you get into issues with `Buffer` and `polyfills` check out the fix below:
+
+- [Check out Buffer issue](https://github.com/xmtp/xmtp-js/issues/487)
+
+## Privy
+
+### Setup
 
 First, you need to import the necessary libraries and components. In your index.js file, import the `PrivyProvider` from @privy-io/react-auth and wrap your main component with it.
 
@@ -26,7 +44,7 @@ onSuccess={(user) => console.log(User ${user.id} logged in!)}
 </PrivyProvider>
 ```
 
-### Step 2: User Authentication
+### User authentication
 
 In your main component, use the `usePrivy` hook to get the user's authentication status and other details.
 
@@ -34,7 +52,7 @@ In your main component, use the `usePrivy` hook to get the user's authentication
 const { ready, authenticated, user, login, logout } = usePrivy();
 ```
 
-### Step 3: Wallet Integration
+### Wallet integration
 
 Use the `useWallets` hook to get the user's wallets. Then, find the embedded wallet and set it as the signer.
 
@@ -55,50 +73,12 @@ useEffect(() => {
   }
 ```
 
-### Step 4: XMTP Integration
+### XMTP Integration
 
 In your `Home` component, use the `useClient` hook from `@xmtp/react-sdk` to get the XMTP client.
 
 ```jsx
 const { client, error, isLoading, initialize } = useClient();
-```
-
-### Step 5: Message Handling
-
-In your `MessageContainer` component, use the `useMessages` and `useSendMessage` hooks from `@xmtp/react-sdk` to get the messages and send messages.
-
-```jsx
-const { messages, isLoading } = useMessages(conversation);
-const { sendMessage } = useSendMessage();
-```
-
-### Step 6: Conversation Handling
-
-In your ListConversations component, use the useConversations and useStreamConversations hooks from @xmtp/react-sdk to get the conversations and stream new conversations.
-
-```jsx
-const { conversations } = useConversations();
-const { error } = useStreamConversations(onConversation);
-```
-
-### Step 7: Logout Handling
-
-Finally, handle the logout process by setting the isConnected state to false, wiping the keys, and removing the signer.
-
-```jsx
-const handleLogout = async () => {
-  setIsConnected(false);
-  const address = await getAddress(signer);
-  wipeKeys(address);
-  setSigner(null);
-  setIsOnNetwork(false);
-  setSelectedConversation(null);
-  localStorage.removeItem("isOnNetwork");
-  localStorage.removeItem("isConnected");
-  if (typeof onLogout === "function") {
-    onLogout();
-  }
-};
 ```
 
 That's it! You've now created an XMTP app with Privy.
